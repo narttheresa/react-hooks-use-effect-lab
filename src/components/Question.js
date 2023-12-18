@@ -1,9 +1,25 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 
 function Question({ question, onAnswered }) {
   const [timeRemaining, setTimeRemaining] = useState(10);
 
   // add useEffect code
+  useEffect(() => {
+    const countDown = setInterval(() => {
+      if (timeRemaining > 0) {
+        setTimeRemaining(timeRemaining - 1)
+      } else {
+        setTimeRemaining(10)
+        onAnswered(false)
+      }
+    }, 1000)
+    return function() {
+      clearInterval(countDown)
+    }
+  }, [timeRemaining, onAnswered])
+
+
 
   function handleAnswer(isCorrect) {
     setTimeRemaining(10);
@@ -19,7 +35,7 @@ function Question({ question, onAnswered }) {
       {answers.map((answer, index) => {
         const isCorrect = index === correctIndex;
         return (
-          <button key={answer} onClick={() => handleAnswer(isCorrect)}>
+          <button key={answer} onClick={() => onAnswered(isCorrect)}>
             {answer}
           </button>
         );
